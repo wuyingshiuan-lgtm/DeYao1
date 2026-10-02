@@ -8,7 +8,7 @@ let data=[],filter='all',editing=null;
 const tbody=document.getElementById('tbody'),q=document.getElementById('q'),syncStatus=document.getElementById('syncStatus'),codePrefix=document.getElementById('codePrefix'),codeHint=document.getElementById('codeHint');
 function headers(extra={}){return {'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json',...extra}}
 function setStatus(msg,ok=true){syncStatus.textContent=(ok?'☁️ ':'⚠️ ')+msg;syncStatus.style.color=ok?'#56718e':'#b42318'}
-function analyzeType(v){let t=String(v||'').trim();if(/(內牙|內螺紋|孔|內徑|母牙)/i.test(t)||/[ØΦφ]?\s*\d+(?:\.\d+)?\s*H\d+/i.test(t))return'柱規';if(/(外牙|外螺紋|軸|外徑|公牙)/i.test(t)||/[ØΦφ]?\s*\d+(?:\.\d+)?\s*h\d+/.test(t))return'環規';return'待確認'}
+function analyzeType(v){let t=String(v||'').trim();if(/GP/i.test(t))return'柱規';if(/GR/i.test(t))return'環規';if(/(內牙|內螺紋|孔|內徑|母牙)/i.test(t)||/[ØΦφ]?\s*\d+(?:\.\d+)?\s*H\d+/i.test(t))return'柱規';if(/(外牙|外螺紋|軸|外徑|公牙)/i.test(t)||/[ØΦφ]?\s*\d+(?:\.\d+)?\s*h\d+/.test(t))return'環規';return'待確認'}
 function typeClass(t){return t==='柱規'?'pg':t==='待確認'?'unknown':''}
 function esc(v){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function sortRows(a,b){let ma=a.code.match(/^DY-(PB|RB)-(\d+)$/i),mb=b.code.match(/^DY-(PB|RB)-(\d+)$/i);if(ma&&mb){let pa=ma[1].toUpperCase(),pb=mb[1].toUpperCase();if(pa!==pb)return pa.localeCompare(pb);return Number(ma[2])-Number(mb[2])}if(ma)return-1;if(mb)return 1;return a.code.localeCompare(b.code,undefined,{numeric:true,sensitivity:'base'})}
